@@ -1,0 +1,38 @@
+name: test
+on:
+  push:
+  issues:
+jobs:
+  linter:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Read github object
+      run: echo "${{ toJSON(github) }}"
+    - name: checkout
+      uses: actions/checkout@v3
+
+    - name: install npm
+      uses: actions/setup-node@v3
+      with: 
+        cache: npm
+    - name: load endless deps
+      run: npm install
+    
+    - name: lint
+      run: npm run lint
+    
+    - name: test
+      run: npm run test
+    
+    - name: build
+      run: |
+        npm run build
+  say-hello:
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo hello world
+        run: echo "Hello world!" 
+      - name: Read github object
+        run: echo "${{ toJSON(github) }}"
